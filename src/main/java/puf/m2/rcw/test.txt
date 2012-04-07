@@ -1,0 +1,1 @@
+oplus(oplus(1, oplus(2,oplus(3,4))), 5)
