@@ -62,11 +62,7 @@ public class LabelSet {
     }
     
     public char extractOne() {
-        try {
-            return labelList.remove(0);
-        } catch (RuntimeException re) {
-            throw re;
-        }
+        return labelList.remove(0);
     }
     
     public static LabelSet createAlphabeticalLabelSet() {

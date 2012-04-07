@@ -47,7 +47,7 @@ public class RelativeCliqueWidth {
         
         RelativeCliqueWidth rcw = new RelativeCliqueWidth();
         Term term = rcw.constructTerm((SimpleNode) node.jjtGetChild(0), graph.getVertexSet());
-        System.out.println(rcw.toString(term, ""));
+        System.out.println(term);
         
 
     }
@@ -207,22 +207,4 @@ public class RelativeCliqueWidth {
 	    return operatorList;
 	}
 	
-	private String toString(Term term, String st) {
-	    if (term instanceof ProperTerm) {
-	        ProperTerm properTerm = (ProperTerm) term;
-	        st = toString(properTerm.getLeft(), st);
-	        APort aPort = properTerm.getRight();
-	        Vertex v = aPort.getVertexSet().toArray()[0];
-	        st = "oplus(" + st + "," + aPort.getLabel() + "(" + v.getName() + ")" + ")";
-	        for (Operator operator : properTerm.getOperatorList()) {
-	            st = operator.toString(st);
-	        }
-	        return st;
-	    } else {
-	        APort aPort = (APort) term;
-	        Vertex v = aPort.getVertexSet().toArray()[0];
-	        return aPort.getLabel() + "(" + v.getName() + ")";
-	    }
-
-	}
 }
