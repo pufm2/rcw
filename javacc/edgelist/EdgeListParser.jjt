@@ -1,0 +1,45 @@
+/* EdgeListParser.jj*/
+options {
+    STATIC = false;
+    MULTI = true;
+    NODE_PREFIX = "Ast";
+}
+PARSER_BEGIN(EdgeListParser)
+    package puf.m2.rcw.edgelist.parser;
+    public class EdgeListParser {
+
+    }
+PARSER_END(EdgeListParser)
+
+SKIP : { " " }
+SKIP : { "\n" | "\r" | "\r\n" }
+TOKEN : { < OPLUS : "oplus" > }
+TOKEN : { < LP : "(" > }
+TOKEN : { < RP : ")" > }
+TOKEN : { < COMMA : "," > }
+TOKEN : { < NUMBER : (["0"-"9"])+ > }
+
+AstEdgeParse edgeParse() #EdgeParse :
+{}
+{
+    <LP> edge() (<COMMA> edge())* <RP>
+    { return jjtThis; }
+}
+
+
+void edge() #Edge :
+{}
+{
+    <LP> vertex() <COMMA> vertex() <RP>
+}
+
+void vertex() #Vertex :
+{
+    Token number;
+}
+{
+    number = <NUMBER>
+    {
+        jjtThis.setName(number.image);
+    }
+}

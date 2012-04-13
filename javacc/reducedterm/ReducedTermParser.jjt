@@ -1,0 +1,49 @@
+/* ReducedTermParser.jj*/
+options {
+    STATIC = false;
+    lookahead = 5;
+    MULTI = true;
+    KEEP_LINE_COLUMN = false;
+    NODE_PREFIX = "Ast";
+}
+PARSER_BEGIN(ReducedTermParser)
+    package puf.m2.rcw.reducedterm.parser;
+    public class ReducedTermParser {
+
+    }
+PARSER_END(ReducedTermParser)
+
+SKIP : { " " }
+SKIP : { "\n" | "\r" | "\r\n" }
+TOKEN : { < OPLUS : "oplus" > }
+TOKEN : { < LP : "(" > }
+TOKEN : { < RP : ")" > }
+TOKEN : { < LSB : "[" > }
+TOKEN : { < RSB : "]" > }
+TOKEN : { < COMMA : "," > }
+TOKEN : { < NUMBER : (["0"-"9"])+ > }
+
+AstReducedTermParse reducedTermParse() #ReducedTermParse :
+{}
+{
+    reducedTerm()
+    { return jjtThis; }
+}
+
+void reducedTerm() #ReducedTerm :
+{}
+{
+    vertex() | <OPLUS> <LP> vertex() <COMMA> reducedTerm() <RP> | <OPLUS> <LP> reducedTerm() <COMMA> vertex() <RP>
+             |<OPLUS> <LSB> vertex() <COMMA> reducedTerm() <RSB> | <OPLUS> <LSB> reducedTerm() <COMMA> vertex() <RSB>
+}
+
+void vertex() #Vertex :
+{
+    Token number;
+}
+{
+    number = <NUMBER>
+    {
+        jjtThis.setName(number.image);
+    }
+}
