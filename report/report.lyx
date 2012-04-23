@@ -1,0 +1,2380 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{algorithm}
+\usepackage{algpseudocode} 
+
+\usepackage{float}
+ 
+\floatstyle{ruled}
+\newfloat{algo}{H}{lop}
+\floatname{algo}{Algo}
+%Say wich type of document
+%Package for math symbols
+\title{Implementation of a polynomial time algorithm to determine relative clique-width of a graph} % this the title
+\author{Le Xuan Hoan \and Nguyen Huu Phat} % these are  authors
+
+\AtBeginDocument{
+  \def\labelitemii{\ding{51}}
+}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding latin9
+\fontencoding default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 2
+\use_esint 1
+\use_mhchem 0
+\use_mathdots 0
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+% make the title : action is after begin document
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+% put the abstract after title and authors
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+Many NP-hard problems are solvable in polynomial time for graphs having
+ a bounded tree width, and correspondingly, having a bounded clique width
+ [1].
+ Vadim Lozin and Dieter Rautenbach in [1] introduced a polynomial time factor
+ 2 approximation algorithm to determine relative clique width of a graph.
+ And more interestingly this algorithm detemines exactly relative clique
+ width with respect to a linear reduced term.
+ This report is about the implementation of this algorithm for the case
+ of linear reduced terms, as well as about the program we developed to support
+ a visual usage for users.
+\end_layout
+
+\begin_layout Abstract
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Clique width is an important graph parameter in the meaning that many NP-hard
+ proles are solvable for graphs with bounded clique width.
+ However calculating clique width of a graph is NP-Complete, it's related
+ to determining the minimum number of labels used in constructing the graph
+ by operations.
+ [1] took a new approach, it dealt with another problem, determining relative
+ clique width.
+ In fact clique width of a graph is the minimum of its relative clique widths.
+ Although the author of [1] confirmed that the problem is NP-hard, an polynomial
+ time approximation algorithm was introduced for the problem.
+ And moreover the algorithm computes exactly the relative clique width in
+ a special case.
+\begin_inset Newline newline
+\end_inset
+
+For the next sections, we will have a brief consolidation about clique width
+ and relative clique width, a detail presentation about the algorithm with
+ a practical example.
+ And then we will introduce about our implementation for this algorithm
+\end_layout
+
+\begin_layout Section
+Definitions
+\end_layout
+
+\begin_layout Standard
+Hereafter we introduce necessary definitions and notations used in this
+ report, then we will present the mentioned algorithm.
+\end_layout
+
+\begin_layout Subsection
+Clique width
+\end_layout
+
+\begin_layout Standard
+Clique width is an important graph parameter in the meaning that many NP-hard
+ proles are solvable for graphs with bounded clique width.
+ Clique width of a graph 
+\emph on
+G(V,E)
+\emph default
+ is defined via labeling vertices of graph and constructing graph through
+ operations.
+ 
+\end_layout
+
+\begin_layout Description
+Definition 
+\emph on
+(labelling a vertex)
+\emph default
+ 
+\emph on
+C
+\emph default
+ is a finite set, a labelled vertex 
+\emph on
+
+\begin_inset Formula $v\in V$
+\end_inset
+
+
+\emph default
+ is denoted by 
+\emph on
+i(v)
+\emph default
+ with 
+\begin_inset Formula $i\in C$
+\end_inset
+
+, we aslo call 
+\emph on
+i(v)
+\emph default
+ a-port 
+\end_layout
+
+\begin_layout Standard
+Then we can have a mapping: 
+\begin_inset Formula 
+\[
+\gamma:V\rightarrow C
+\]
+
+\end_inset
+
+There are 3 kinds of operations: 
+\end_layout
+
+\begin_layout Enumerate
+Relabelling: denoted by symbol 
+\begin_inset Formula $\rho_{a\rightarrow b}$
+\end_inset
+
+ : makes all vertices labelled by 
+\emph on
+a
+\emph default
+ become labelled by 
+\emph on
+b
+\emph default
+ 
+\end_layout
+
+\begin_layout Enumerate
+Edge addition: denoted by symbol 
+\begin_inset Formula $\eta_{a,b}$
+\end_inset
+
+ : creates edges between vertices labelled by 
+\emph on
+a
+\emph default
+ and vertices labelled by 
+\emph on
+b
+\emph default
+ 
+\end_layout
+
+\begin_layout Enumerate
+Disjoint union: denoted by symbol 
+\begin_inset Formula $\oplus$
+\end_inset
+
+ : disjoint union is commutative 
+\end_layout
+
+\begin_layout Standard
+The process of constructing graph is denoted as an expression of labelled
+ vertices and these three kinds of operations.
+ We call such an expression a term.
+ 
+\end_layout
+
+\begin_layout Description
+Example We use an example from [1], we have a following term 
+\begin_inset Formula 
+\[
+t=\eta_{b,c}(((\rho_{b\to a}(\eta_{b,c}((\eta_{a,b}(a(1)\oplus b(2)))\oplus c(3))))\oplus b(4))\oplus(\eta_{a,c}(\eta_{a,b}(a(5)\oplus b(6)))\oplus c(7)))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This term denotes following graphs.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/graph_by_t.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Because there may be more than one way to construct a graph, therefore we
+ can have many terms 
+\emph on
+t 
+\emph default
+that denote the same graph (two graphs are considered the same if they are
+ isomorphic).
+ For such a term 
+\emph on
+t
+\emph default
+, we define 
+\emph on
+
+\begin_inset Formula $val(t)=(G,\gamma)$
+\end_inset
+
+
+\emph default
+ 
+\end_layout
+
+\begin_layout Description
+Definition 
+\emph on
+(Clique width)
+\emph default
+ Clique width of a graph G 
+\emph on
+cw(G)
+\emph default
+ is defined as follows: 
+\begin_inset Formula 
+\[
+cw(G)=min\{\mid C\mid\mid\exists t:val(t)=(G,\gamma)\}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Calculating clique width of a graph is an NP-complete problem.
+\end_layout
+
+\begin_layout Subsection
+Relative clique width
+\end_layout
+
+\begin_layout Standard
+Vadim Lozin and Dieter Rautenbach in [1] made a new approach to the problem
+ of determing clique width by introducing the notion of 
+\emph on
+relative clique width
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Description
+Definition 
+\emph on
+(Reduced term)
+\emph default
+ a reduced term 
+\emph on
+r
+\emph default
+ of a term 
+\emph on
+t
+\emph default
+ is a term acquired by replacing in 
+\emph on
+t
+\emph default
+ all symbols 
+\emph on
+i(v)
+\emph default
+ by 
+\emph on
+v
+\emph default
+, and removing all symbols 
+\begin_inset Formula $\rho_{a\rightarrow b}$
+\end_inset
+
+and 
+\begin_inset Formula $\eta_{a,b}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Description
+Example for a term 
+\emph on
+t
+\emph default
+ as above, we have the reduced term 
+\emph on
+r
+\emph default
+ as follows: 
+\begin_inset Formula 
+\[
+r=red(t)=(((((((v_{1}\oplus v_{2}))\oplus v_{3})))\oplus v_{4})\oplus(((v_{5}\oplus v_{6}))\oplus v_{7}))=(((1\oplus2)\oplus3)\oplus v_{4})\oplus((v_{5}\oplus v_{6})\oplus v_{7})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A reduced term denoted a rooted binary tree
+\end_layout
+
+\begin_layout Description
+Definition 
+\emph on
+(relative clique width)
+\emph default
+ relative clique width of a graph G with respect to a reduced term r, 
+\emph on
+cw(G,r)
+\emph default
+ is defined as follow: 
+\begin_inset Formula 
+\[
+cw(G,r)=min\{\mid C\mid\mid\exists t:val(t)=(G,\gamma)\wedge red(t)=r\}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[1] introduced a factor 2 algorithm to approximate 
+\emph on
+cw(G,r)
+\emph default
+.
+ And an interesting thing is the algorithm can determine exactly in a special
+ case, the case of linear reduced terms 
+\end_layout
+
+\begin_layout Description
+Definition 
+\emph on
+(linear reduced term)
+\emph default
+ a reduced term 
+\emph on
+r
+\emph default
+ is linear iff: 
+\begin_inset Formula $\forall$
+\end_inset
+
+ subterm 
+\begin_inset Formula $s_{1}\oplus s_{2}$
+\end_inset
+
+ of r, 
+\begin_inset Formula $\exists i\in\{1,2\}:s_{i}$
+\end_inset
+
+ has form of 
+\emph on
+v
+\emph default
+ 
+\end_layout
+
+\begin_layout Description
+Example follwing is an example of a linear reduced term 
+\begin_inset Formula 
+\[
+r=(((1\oplus(2\oplus3))\oplus4)\oplus5)\oplus6
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This term denotes following rooted binary tree:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/tree_by_r.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Graph H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Following is a very important notation used in the algorithm, but firstly
+ let us define 
+\emph on
+N
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+G
+\end_layout
+
+\end_inset
+
+(u)
+\emph default
+ to be the neighboorhood of vertex 
+\emph on
+u
+\emph default
+ in graph 
+\emph on
+G
+\emph default
+ 
+\end_layout
+
+\begin_layout Description
+Definition For a subterm 
+\emph on
+s
+\emph default
+ of 
+\emph on
+r
+\emph default
+, let 
+\emph on
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+
+\emph default
+ denote the set of vertices in s.
+ We define a graph 
+\emph on
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= (V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, E
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+)
+\emph default
+ with 
+\begin_inset Formula $uv\in E_{s}\Longleftrightarrow N_{G}(u)\setminus V_{s}\neq N_{G}(v)\setminus V_{s}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsection
+Algorithm
+\end_layout
+
+\begin_layout Standard
+This algorithm determines 
+\emph on
+cw(G, r)
+\emph default
+ by recursively constructing a term 
+\emph on
+t
+\emph default
+ such that 
+\emph on
+t
+\emph default
+ satisfies definition of 
+\emph on
+cw(G, r)
+\emph default
+, after we have 
+\emph on
+t
+\emph default
+, determining 
+\emph on
+cw(G, r)
+\emph default
+ is trivial.
+ Let 
+\emph on
+s
+\emph default
+ is a subterm of 
+\emph on
+r
+\emph default
+, we construct 
+\emph on
+t(r)
+\emph default
+ recursively as following Algorithm 1:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Relative clique dertermining algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "rcw"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+If 
+\begin_inset Formula $s=v\in V$
+\end_inset
+
+, then 
+\begin_inset Formula $t(s)=i(v),i\in C$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+If 
+\begin_inset Formula $s=s_{1}\oplus s_{2}$
+\end_inset
+
+, then 
+\begin_inset Formula $t(s)=\beta_{l}(\beta_{l-1}(...(\beta_{1}(\alpha_{k}(\alpha_{k-1}(...(\alpha_{1}(t(s_{1})\oplus t(s_{2})))))))))$
+\end_inset
+
+, with 
+\emph on
+
+\begin_inset Formula $\alpha_{1},...,\alpha_{k}$
+\end_inset
+
+
+\emph default
+ have form of 
+\begin_inset Formula $\eta_{i,j}$
+\end_inset
+
+ and 
+\emph on
+
+\begin_inset Formula $\beta_{1},...,\beta_{l}$
+\end_inset
+
+
+\emph default
+ have form of 
+\begin_inset Formula $\rho_{i\rightarrow j}$
+\end_inset
+
+ such that following conditions must be satisfied
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+
+\emph on
+\begin_inset Formula $val(t(s))=(G[Vs],\gamma_{t(s)})$
+\end_inset
+
+
+\emph default
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+red(t(s)) = s
+\emph default
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\forall u,v\in V_{s},\gamma_{t(s)}(u)=\gamma_{t(s)}(v)\Leftrightarrow uv\notin E_{s}$
+\end_inset
+
+, it means 
+\emph on
+
+\begin_inset Formula $\gamma_{t(s)}$
+\end_inset
+
+
+\emph default
+assigns the same label to two vertices iff they stay in the same partite
+ set of 
+\emph on
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+
+\emph default
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+\begin_inset Formula $\gamma_{t(s_{1})}\cap\gamma_{t(s_{2})}=\emptyset$
+\end_inset
+
+
+\emph default
+ 
+\end_layout
+
+\end_deeper
+\end_inset
+
+With condition (c), we need to detemine partite sets of 
+\emph on
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+
+\emph default
+.
+ Fortunately, we can have an algorithm to do that from Lemma 2 in [1]: 
+\end_layout
+
+\begin_layout Quotation
+If 
+\begin_inset Formula $s=s_{1}\oplus s_{2}$
+\end_inset
+
+ is a subterm of r, then every partite sets of 
+\emph on
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+
+\emph default
+is a union of partite sets of 
+\begin_inset Formula $H_{s_{1}}$
+\end_inset
+
+and 
+\begin_inset Formula $H_{s_{2}}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Call 
+\begin_inset Formula $U_{s_{1}}$
+\end_inset
+
+and 
+\begin_inset Formula $U_{s_{2}}$
+\end_inset
+
+is sets of partite set of 
+\begin_inset Formula $H_{s_{1}}$
+\end_inset
+
+and 
+\begin_inset Formula $H_{s_{2}}$
+\end_inset
+
+, we have Algorithm 2 as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Partite sets determining algorithm
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{algorithmic}[1] 
+\backslash
+State $U
+\backslash
+gets H_{s_{1}}
+\backslash
+cup H_{s_{2}}$ 
+\backslash
+While{$U
+\backslash
+neq
+\backslash
+emptyset$}     
+\backslash
+State $partiteSets
+\backslash
+leftarrow
+\backslash
+emptyset$     
+\backslash
+ForAll{$u
+\backslash
+in U$}         
+\backslash
+State $vertexU
+\backslash
+gets u.get(0)$         
+\backslash
+ForAll{$vertex
+\backslash
+in vertexSet$}             
+\backslash
+State $contained
+\backslash
+gets true$             
+\backslash
+If{$(vertex,vertexU)
+\backslash
+in H_{s}$}                 
+\backslash
+State $contained
+\backslash
+gets false$                 
+\backslash
+State break             
+\backslash
+EndIf         
+\backslash
+EndFor         
+\backslash
+If{$contained$}             
+\backslash
+State $partiteSets
+\backslash
+gets u$             
+\backslash
+State $U.remove(u)$         
+\backslash
+EndIf     
+\backslash
+EndFor 
+\backslash
+EndWhile 
+\backslash
+end{algorithmic}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+A practical example
+\end_layout
+
+\begin_layout Standard
+To make an example, we will run manually the relative clique dertermining
+ algorithm with following input:
+\end_layout
+
+\begin_layout Itemize
+A Graph with 6 verticess
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/graph_example.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Linear reduced term 
+\begin_inset Formula $r=(((1\oplus(2\oplus3))\oplus4)\oplus5)\oplus6$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Set of label 
+\emph on
+{'a', ..., 'z'}
+\end_layout
+
+\begin_layout Standard
+It's easy to see that actually the algorithm does the recursion on the structure
+ of 
+\emph on
+s
+\emph default
+ (a tree-like structure).
+ However to keep the illustration for this algorithm clear and simple, instead
+ of going top-down from the root of the tree, we will describe the illustration
+ directly, bottom up from the deepest leaves (see an example of a rooted
+ binary tree above).
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+s = 2
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We have: 
+\emph on
+a(2)
+\end_layout
+
+\begin_layout Itemize
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= {2}
+\end_layout
+
+\begin_layout Itemize
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= 
+\begin_inset Graphics
+	filename image/example1.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+t(s) = a(2)
+\end_layout
+
+\begin_layout Itemize
+U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 1) = {a(2)}
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma_{t(s)}(V_{s})=\{a\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\emph on
+s = 3
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We have: 
+\emph on
+b(3)
+\end_layout
+
+\begin_layout Itemize
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= {3}
+\end_layout
+
+\begin_layout Itemize
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= 
+\begin_inset Graphics
+	filename image/example2.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+t(s) = b(3)
+\end_layout
+
+\begin_layout Itemize
+U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 1) = {b(3)}
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma_{t(s)}(V_{s})=\{b\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset Formula $s=2\oplus3$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We have: 
+\begin_inset Formula $a(2)\oplus b(3)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Apply (a)
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\begin_inset Formula $\Longrightarrow\eta_{a,b}(a(2)\oplus b(3))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= {2, 3} 
+\end_layout
+
+\begin_layout Itemize
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= 
+\begin_inset Graphics
+	filename image/example3.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 1) = {a(2)}, U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 2) = {b(3)} 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $t(s)=\eta_{a,b}(a(2)\oplus b(3))$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma_{t(s)}(V_{s})=\{a,b\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset Formula $s=1\oplus(2\oplus3)$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We have: 
+\begin_inset Formula $c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Apply (2)
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\begin_inset Formula $\Longrightarrow\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3)))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= {1, 2, 3} 
+\end_layout
+
+\begin_layout Itemize
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+ = 
+\begin_inset Graphics
+	filename image/example4.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 1) = {c(1), a(2)}, U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 2) = {b(3)} 
+\end_layout
+
+\begin_layout Itemize
+Apply (c) 
+\begin_inset Formula $\Longrightarrow t(s)=\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma_{t(s)}(V_{s})=\{a,b\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset Formula $s=(1\oplus(2\oplus3))\oplus4$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We have: 
+\begin_inset Formula $\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Apply (2) 
+\begin_inset Formula $\Longrightarrow\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= {1, 2, 3, 4} 
+\end_layout
+
+\begin_layout Itemize
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+ = 
+\begin_inset Graphics
+	filename image/example5.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 1) = {a(1), a(2), b(3)}, U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 2) = {c(4)} 
+\end_layout
+
+\begin_layout Itemize
+Apply (c) 
+\begin_inset Formula $\Longrightarrow t(s)=\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)))$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma_{t(s)}(V_{s})=\{a,c\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset Formula $s=((1\oplus(2\oplus3))\oplus4)\oplus5$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We have: 
+\begin_inset Formula $\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)))\oplus b(5)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Apply (a) 
+\begin_inset Formula $\Longrightarrow\eta_{b,c}(\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)))\oplus b(5))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= {1, 2, 3, 4, 5} 
+\end_layout
+
+\begin_layout Itemize
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+ = 
+\begin_inset Graphics
+	filename image/example6.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 1) = {a(1), a(2), a(3), c(4)}, U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 2) = {b(5)} 
+\end_layout
+
+\begin_layout Itemize
+Apply (c) 
+\begin_inset Formula $\Longrightarrow t(s)=\rho_{c\rightarrow a}(\eta_{b,c}(\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)))\oplus b(5)))$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma_{t(s)}(V_{s})=\{a,b\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset Formula $s=(((1\oplus(2\oplus3))\oplus4)\oplus5)\oplus6$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We have: 
+\begin_inset Formula $\rho_{c\rightarrow a}(\eta_{b,c}(\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)))\oplus b(5)))\oplus c(6)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Apply (a) 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\Longrightarrow\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{b,c}(\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)))\oplus b(5)))\oplus c(6))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+V
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+= {1, 2, 3, 4, 5, 6} 
+\end_layout
+
+\begin_layout Itemize
+H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+ = 
+\begin_inset Graphics
+	filename image/example7.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+U(H
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+s
+\end_layout
+
+\end_inset
+
+, 1) = {a(1), a(2), a(3), c(4), b(5), c(6)} 
+\end_layout
+
+\begin_layout Itemize
+Apply (c) 
+\begin_inset Formula $\Longrightarrow t(s)=\rho_{c\rightarrow a}(\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{b,c}(\rho_{b\rightarrow a}(\eta_{c,b}(\rho_{c\rightarrow a}(\eta_{c,a}(c(1)\oplus\eta_{a,b}(a(2)\oplus b(3))))\oplus c(4)))\oplus b(5)))\oplus c(6))))$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma_{t(s)}(V_{s})=\{a\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Implementation as a program
+\end_layout
+
+\begin_layout Standard
+This section is an introduction about the work we have done: write a program
+ to realize this algorithm.
+ First of all we will summarize the requirements from the advisor, then
+ introduce briefly the program, and finally point out pros and cons of this
+ program
+\end_layout
+
+\begin_layout Subsection
+Requirement specification
+\end_layout
+
+\begin_layout Standard
+The program takes following as input: 
+\end_layout
+
+\begin_layout Itemize
+The number of vertices of a graph
+\end_layout
+
+\begin_layout Itemize
+The list of edges of the graph, for example: 
+\emph on
+((1, 2) , (2 , 3) , (3 , 4) , (4 , 5) , (5 , 6))
+\end_layout
+
+\begin_layout Itemize
+A linear reduced term r, for example: 
+\emph on
+oplus(oplus(oplus(oplus(1 ,oplus (2 , 3)), 4) , 5) , 6)
+\emph default
+.
+ To leverage the input readability, two types of parenthesis, 
+\emph on
+()
+\emph default
+ and 
+\emph on
+[]
+\emph default
+ are supported, it means someone can input oplus[oplus[oplus(oplus(1 ,oplus
+ (2 , 3)), 4) , 5] , 6]
+\end_layout
+
+\begin_layout Standard
+The program will output a term t such that 
+\emph on
+
+\begin_inset Formula $val(t)=(G,\gamma)$
+\end_inset
+
+
+\emph default
+ and 
+\emph on
+red(t) = r
+\emph default
+ and the number of labels used in 
+\emph on
+t
+\emph default
+ is minimum.
+ For example, with the reduced term 
+\emph on
+r
+\emph default
+ as above, the program will output
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="1">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+rel_b_a(rel_c_a(add_c_b(oplus(rel_c_a(
+\end_layout
+
+\begin_layout Plain Layout
+
+add_b_c(oplus(rel_b_a(add_c_a(oplus(
+\end_layout
+
+\begin_layout Plain Layout
+
+rel_c_b(add_c_b(oplus(add_b_a(oplus(
+\end_layout
+
+\begin_layout Plain Layout
+
+a(3),b(2))),c(1)))),c(4)))),b(5)))),c(6)))))
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Program specification
+\end_layout
+
+\begin_layout Standard
+Our program is provided in two user interfaces: a console UI and a graphical
+ UI 
+\end_layout
+
+\begin_layout Enumerate
+Console UI:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The usage as follows: rcw.(bat|sh) <input_file> [ouput_file] 
+\end_layout
+
+\begin_layout Itemize
+In the case output file is missing, term t will be printed out to console
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Graphical UI:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We provide a GUI version of the program, to start it, just run: rcwui.(bin|sh)
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Advantage and disadvantage of the program
+\end_layout
+
+\begin_layout Standard
+The program basically satisfies the requirements.
+ However the user interface is not really user-friendly and the usablity
+ shoud be improved more.
+ For example, to increase usabilty, there are many things the program can
+ do: 
+\end_layout
+
+\begin_layout Itemize
+Support drawing graph 
+\end_layout
+
+\begin_layout Itemize
+Mapping from a subterm of 
+\emph on
+r
+\emph default
+ to the corresponding subgraph 
+\end_layout
+
+\begin_layout Itemize
+Output the result step-by-step like the example we did above, so user can
+ easily verify the result 
+\end_layout
+
+\begin_layout Section
+Implementation details
+\end_layout
+
+\begin_layout Standard
+Now is the time for us to look deeper into the details of implemetating.
+ Throughout this section, we will provide you information about the programming
+ language, the processing of input data, and the data structure (or according
+ to object oriented programming, the class diagram) we use
+\end_layout
+
+\begin_layout Subsection
+Programming language
+\end_layout
+
+\begin_layout Standard
+Our choice of programming language is Java.
+ Java is a platform-independent language, so our program can run seamlessly
+ on any operation system that suspports Java (Windows, Linux, Mac OS ...).
+ Beside that Java has a very big user-community, so we can find a big support
+ from community for common problems we can cope with during implemetation
+ process.
+ For example, to process data input, which we are about to discuss right
+ after, we utilize a lexer/parser generator from public domain
+\end_layout
+
+\begin_layout Subsection
+Proceesing of data input
+\end_layout
+
+\begin_layout Standard
+As mentioned above, we have three types of input data 
+\end_layout
+
+\begin_layout Enumerate
+The number of vertices of a graph 
+\end_layout
+
+\begin_layout Enumerate
+The list of edges of the graph, for example: 
+\end_layout
+
+\begin_layout Enumerate
+A linear reduced term 
+\emph on
+r
+\emph default
+, for example: .
+ To leverage the input readability, two types of parenthesis, () and []
+ are supported 
+\end_layout
+
+\begin_layout Standard
+Processing of (1) is trivial, (2) is less easy, and (3) is a little difficult.
+ Fortunately, we could overcome this problem quite quickly with so-called
+ parser generator, and more fortunately, there are such generators for Java.
+ The one we chose is JavaCC - stands for Java Compiler Compiler, a very
+ popular parser generator for Java.
+ JavaCC takes a grammar specification written in Extended Backus–Naur Form
+ (EBNF), anf then generates Java source code of the corresponding parser.
+ JavaCC also comes with a specific tools JJTree, which helps to build an
+ Abstract Syntax Tree (AST) from data input to parser.
+ So all the works we must do are just writing the context free grammar for
+ (2) and (3) 
+\end_layout
+
+\begin_layout Itemize
+Edge list 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+COMMA = ",";
+\end_layout
+
+\begin_layout Plain Layout
+
+LP = "(";
+\end_layout
+
+\begin_layout Plain Layout
+
+RP = ")";
+\end_layout
+
+\begin_layout Plain Layout
+
+NUMBER = ['0'-'9']+;
+\end_layout
+
+\begin_layout Plain Layout
+
+VERTEX = NUMBER;
+\end_layout
+
+\begin_layout Plain Layout
+
+EDGE = LP VERTEX COMMA VERTEX RP;
+\end_layout
+
+\begin_layout Plain Layout
+
+EDGELIST = LP EDGE COMMA EDGE* RP;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Linear reduced term
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+OPLUS = "oplus";
+\end_layout
+
+\begin_layout Plain Layout
+
+LP = "(";
+\end_layout
+
+\begin_layout Plain Layout
+
+RP = ")";
+\end_layout
+
+\begin_layout Plain Layout
+
+LSB = "[";
+\end_layout
+
+\begin_layout Plain Layout
+
+RSB = "]";
+\end_layout
+
+\begin_layout Plain Layout
+
+COMMA = ",";
+\end_layout
+
+\begin_layout Plain Layout
+
+NUMBER = (["0"-"9"])+;
+\end_layout
+
+\begin_layout Plain Layout
+
+VERTEX = NUMBER;
+\end_layout
+
+\begin_layout Plain Layout
+
+REDUCEDTERM = VERTEX |
+\end_layout
+
+\begin_layout Plain Layout
+
+      <OPLUS> <LP> VERTEX <COMMA> REDUCEDTERM <RP> |
+\end_layout
+
+\begin_layout Plain Layout
+
+      <OPLUS> <LP> REDUCEDTERM <COMMA> VERTEX <RP> |
+\end_layout
+
+\begin_layout Plain Layout
+
+      <OPLUS> <LSB> VERTEX <COMMA> REDUCEDTERM <RSB> |
+\end_layout
+
+\begin_layout Plain Layout
+
+      <OPLUS> <LSB> REDUCEDTERM <COMMA> VERTEX <RSB>
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsection
+Data structure
+\end_layout
+
+\begin_layout Standard
+Java is an OOP language, so to install the algorithm in Java, we need to
+ realize the incident notations to the algorithm (such as term, graph) as
+ Java classes.
+ Following are class diagrams realated to these notations:
+\end_layout
+
+\begin_layout Subsubsection
+Class diagram for term-related notations
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/classdiagram1.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Some annotations:
+\end_layout
+
+\begin_layout Itemize
+APort is class for terms 
+\emph on
+t(s)
+\emph default
+ with 
+\emph on
+s = v
+\end_layout
+
+\begin_layout Itemize
+ProperTerm is class for terms 
+\emph on
+t(s)
+\emph default
+ 
+\begin_inset Formula $s=s_{1}\oplus s_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Class diagram for graph-related notations
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/classdiagram2.png
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Some annotations:
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+Vertex
+\emph default
+ is class to abstract a vertex, each vertex has a list of adjacent vertices
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+VertexSet
+\emph default
+ is a class to abstract a set of vertices, 
+\emph on
+VertexSet
+\emph default
+ supports some set operations such as subtract, union
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+VertexFamily
+\emph default
+ is a set of sets of vertices.
+ We use 
+\emph on
+VertexFamily
+\emph default
+ to denote notations such as 
+\emph on
+set of partite sets
+\end_layout
+
+\begin_layout Subsection
+Source code version control system
+\end_layout
+
+\begin_layout Standard
+We also setup a central source code repository for development process.
+ The version control system we use is Git, and our source code is hosted
+ at github.
+\end_layout
+
+\begin_layout Section
+Working of the program
+\end_layout
+
+\begin_layout Subsection
+Testing and result
+\end_layout
+
+\begin_layout Standard
+We tested this program with some data tests as follows, program works fine
+ all cases
+\end_layout
+
+\begin_layout Enumerate
+Test data 1
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+n = 6 
+\end_layout
+
+\begin_layout Itemize
+r = oplus(oplus(oplus(oplus(1,oplus(2,3)),4),5),6)
+\end_layout
+
+\begin_layout Itemize
+Edge list = ((1,2),(2,3),(3,4),(4,5),(5,6))
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+a
+\end_layout
+
+\begin_layout Enumerate
+3
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+The program basically meets our advisor's requirements, it is able to detemines
+ exactly relative clique width of a graph with respect to a linear reduced
+ term.
+ However, as mentioned above, there are still many things waiting to impove,
+ especially about usability of the program.
+\begin_inset Newline newline
+\end_inset
+
+Clique width as well as other parameters of graph is an interesting subject.
+ Researching in this field is quite valuable.
+ During this project, we have been known that we have more effective algorithms
+ for determining clique width.
+ So we believe one of further works we could try is to investigate those
+ algorithms.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "biblio"
+options "abbrv"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
