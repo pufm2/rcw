@@ -131,17 +131,25 @@ Many NP-hard problems are solvable in polynomial time for graphs having
  [1].
  Vadim Lozin and Dieter Rautenbach in [1] introduced a polynomial time factor
  2 approximation algorithm to determine relative clique width of a graph.
- And more interestingly this algorithm detemines exactly relative clique
+ And more interestingly this algorithm determines exactly relative clique
  width with respect to a linear reduced term.
  This report is about the implementation of this algorithm for the case
  of linear reduced terms, as well as about the program we developed to support
  a visual usage for users.
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Abstract
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
 
+\end_inset
+
+
+\begin_inset Newpage pagebreak
 \end_inset
 
  
@@ -201,13 +209,13 @@ G(V,E)
 \begin_layout Description
 Definition 
 \emph on
-(labelling a vertex)
+(labeling a vertex)
 \emph default
  
 \emph on
 C
 \emph default
- is a finite set, a labelled vertex 
+ is a finite set, a labeled vertex 
 \emph on
 
 \begin_inset Formula $v\in V$
@@ -223,7 +231,7 @@ i(v)
 \begin_inset Formula $i\in C$
 \end_inset
 
-, we aslo call 
+, we also call 
 \emph on
 i(v)
 \emph default
@@ -243,15 +251,15 @@ There are 3 kinds of operations:
 \end_layout
 
 \begin_layout Enumerate
-Relabelling: denoted by symbol 
+Relabeling: denoted by symbol 
 \begin_inset Formula $\rho_{a\rightarrow b}$
 \end_inset
 
- : makes all vertices labelled by 
+ : makes all vertices labeled by 
 \emph on
 a
 \emph default
- become labelled by 
+ become labeled by 
 \emph on
 b
 \emph default
@@ -263,11 +271,11 @@ Edge addition: denoted by symbol
 \begin_inset Formula $\eta_{a,b}$
 \end_inset
 
- : creates edges between vertices labelled by 
+ : creates edges between vertices labeled by 
 \emph on
 a
 \emph default
- and vertices labelled by 
+ and vertices labeled by 
 \emph on
 b
 \emph default
@@ -283,7 +291,7 @@ Disjoint union: denoted by symbol
 \end_layout
 
 \begin_layout Standard
-The process of constructing graph is denoted as an expression of labelled
+The process of constructing graph is denoted as an expression of labeled
  vertices and these three kinds of operations.
  We call such an expression a term.
  
@@ -390,7 +398,7 @@ Relative clique width
 
 \begin_layout Standard
 Vadim Lozin and Dieter Rautenbach in [1] made a new approach to the problem
- of determing clique width by introducing the notion of 
+ of determining clique width by introducing the notion of 
 \emph on
 relative clique width
 \emph default
@@ -501,7 +509,7 @@ r
 \begin_inset Formula $\forall$
 \end_inset
 
- subterm 
+ sub-term 
 \begin_inset Formula $s_{1}\oplus s_{2}$
 \end_inset
 
@@ -517,7 +525,7 @@ v
 \end_layout
 
 \begin_layout Description
-Example follwing is an example of a linear reduced term 
+Example following is an example of a linear reduced term 
 \begin_inset Formula 
 \[
 r=(((1\oplus(2\oplus3))\oplus4)\oplus5)\oplus6
@@ -600,7 +608,7 @@ G
 
 (u)
 \emph default
- to be the neighboorhood of vertex 
+ to be the neighborhood of vertex 
 \emph on
 u
 \emph default
@@ -612,7 +620,7 @@ G
 \end_layout
 
 \begin_layout Description
-Definition For a subterm 
+Definition For a sub-term 
 \emph on
 s
 \emph default
@@ -706,7 +714,7 @@ cw(G, r)
 \emph on
 s
 \emph default
- is a subterm of 
+ is a sub-term of 
 \emph on
 r
 \emph default
@@ -728,7 +736,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Relative clique dertermining algorithm
+Relative clique determining algorithm
 \end_layout
 
 \end_inset
@@ -857,7 +865,7 @@ s
 \end_deeper
 \end_inset
 
-With condition (c), we need to detemine partite sets of 
+With condition (c), we need to determine partite sets of 
 \emph on
 H
 \begin_inset script subscript
@@ -879,7 +887,7 @@ If
 \begin_inset Formula $s=s_{1}\oplus s_{2}$
 \end_inset
 
- is a subterm of r, then every partite sets of 
+ is a sub-term of r, then every partite sets of 
 \emph on
 H
 \begin_inset script subscript
@@ -1032,12 +1040,12 @@ A practical example
 \end_layout
 
 \begin_layout Standard
-To make an example, we will run manually the relative clique dertermining
+To make an example, we will run manually the relative clique determining
  algorithm with following input:
 \end_layout
 
 \begin_layout Itemize
-A Graph with 6 verticess
+A Graph with 6 vertices
 \begin_inset Newline newline
 \end_inset
 
@@ -1781,11 +1789,11 @@ The list of edges of the graph, for example:
 \end_layout
 
 \begin_layout Itemize
-A linear reduced term r, for example: 
+A linear reduced term r, for example
 \emph on
-oplus(oplus(oplus(oplus(1 ,oplus (2 , 3)), 4) , 5) , 6)
+ 
 \emph default
-.
+oplus(oplus(oplus(oplus(1, oplus (2, 3)), 4) , 5), 6).
  To leverage the input readability, two types of parenthesis, 
 \emph on
 ()
@@ -1794,8 +1802,8 @@ oplus(oplus(oplus(oplus(1 ,oplus (2 , 3)), 4) , 5) , 6)
 \emph on
 []
 \emph default
- are supported, it means someone can input oplus[oplus[oplus(oplus(1 ,oplus
- (2 , 3)), 4) , 5] , 6]
+ are supported, it means someone can input oplus[oplus[oplus(oplus(1, oplus
+ (2, 3)), 4), 5], 6]
 \end_layout
 
 \begin_layout Standard
@@ -1821,19 +1829,6 @@ t
 r
 \emph default
  as above, the program will output
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="1">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset listings
 inline false
 status open
@@ -1863,16 +1858,6 @@ a(3),b(2))),c(1)))),c(4)))),b(5)))),c(6)))))
 
 \end_layout
 
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
 Program specification
 \end_layout
@@ -1888,7 +1873,19 @@ Console UI:
 
 \begin_deeper
 \begin_layout Itemize
-The usage as follows: rcw.(bat|sh) <input_file> [ouput_file] 
+The usage as follows: 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+rcw.(bat|sh) <input_file> [ouput_file]
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
@@ -1903,8 +1900,63 @@ Graphical UI:
 
 \begin_deeper
 \begin_layout Itemize
-We provide a GUI version of the program, to start it, just run: rcwui.(bin|sh)
- 
+We provide a GUI version of the program, to start it, just run: 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+rcwui.(bin|sh)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Following is a screen-shot of this GUI
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/MainUi.PNG
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_deeper
@@ -1914,9 +1966,9 @@ Advantage and disadvantage of the program
 
 \begin_layout Standard
 The program basically satisfies the requirements.
- However the user interface is not really user-friendly and the usablity
- shoud be improved more.
- For example, to increase usabilty, there are many things the program can
+ However the user interface is not really user-friendly and the usability
+ should be improved more.
+ For example, to increase usability, there are many things the program can
  do: 
 \end_layout
 
@@ -1925,11 +1977,11 @@ Support drawing graph
 \end_layout
 
 \begin_layout Itemize
-Mapping from a subterm of 
+Mapping from a sub-term of 
 \emph on
 r
 \emph default
- to the corresponding subgraph 
+ to the corresponding sub-graph 
 \end_layout
 
 \begin_layout Itemize
@@ -1942,7 +1994,7 @@ Implementation details
 \end_layout
 
 \begin_layout Standard
-Now is the time for us to look deeper into the details of implemetating.
+Now is the time for us to look deeper into the details of implementing.
  Throughout this section, we will provide you information about the programming
  language, the processing of input data, and the data structure (or according
  to object oriented programming, the class diagram) we use
@@ -1955,16 +2007,16 @@ Programming language
 \begin_layout Standard
 Our choice of programming language is Java.
  Java is a platform-independent language, so our program can run seamlessly
- on any operation system that suspports Java (Windows, Linux, Mac OS ...).
+ on any operation system that supports Java (Windows, Linux, Mac OS ...).
  Beside that Java has a very big user-community, so we can find a big support
- from community for common problems we can cope with during implemetation
+ from community for common problems we can cope with during implementation
  process.
  For example, to process data input, which we are about to discuss right
  after, we utilize a lexer/parser generator from public domain
 \end_layout
 
 \begin_layout Subsection
-Proceesing of data input
+Processing of data input
 \end_layout
 
 \begin_layout Standard
@@ -1977,6 +2029,8 @@ The number of vertices of a graph
 
 \begin_layout Enumerate
 The list of edges of the graph, for example: 
+\emph on
+((1,2),(2,3),(3,4),(4,5),(5,6))
 \end_layout
 
 \begin_layout Enumerate
@@ -1984,9 +2038,16 @@ A linear reduced term
 \emph on
 r
 \emph default
-, for example: .
+, for example: 
+\emph on
+oplus(oplus(oplus(oplus(1,oplus(2,3)),4),5),6)
+\emph default
+.
  To leverage the input readability, two types of parenthesis, () and []
- are supported 
+ are supported, e.g.
+ someone can input 
+\emph on
+oplus[oplus[oplus(oplus(1,oplus(2,3)),4),5],6]
 \end_layout
 
 \begin_layout Standard
@@ -1996,7 +2057,7 @@ Processing of (1) is trivial, (2) is less easy, and (3) is a little difficult.
  The one we chose is JavaCC - stands for Java Compiler Compiler, a very
  popular parser generator for Java.
  JavaCC takes a grammar specification written in Extended Backus–Naur Form
- (EBNF), anf then generates Java source code of the corresponding parser.
+ (EBNF), and then generates Java source code of the corresponding parser.
  JavaCC also comes with a specific tools JJTree, which helps to build an
  Abstract Syntax Tree (AST) from data input to parser.
  So all the works we must do are just writing the context free grammar for
@@ -2004,11 +2065,7 @@ Processing of (1) is trivial, (2) is less easy, and (3) is a little difficult.
 \end_layout
 
 \begin_layout Itemize
-Edge list 
-\begin_inset Newline newline
-\end_inset
-
-
+Edge list
 \begin_inset listings
 inline false
 status open
@@ -2059,10 +2116,6 @@ EDGELIST = LP EDGE COMMA EDGE* RP;
 
 \begin_layout Itemize
 Linear reduced term
-\begin_inset Newline newline
-\end_inset
-
-
 \begin_inset listings
 inline false
 status open
@@ -2129,7 +2182,7 @@ REDUCEDTERM = VERTEX |
 
 \begin_layout Plain Layout
 
-      <OPLUS> <LSB> REDUCEDTERM <COMMA> VERTEX <RSB>
+      <OPLUS> <LSB> REDUCEDTERM <COMMA> VERTEX <RSB>;
 \end_layout
 
 \end_inset
@@ -2145,7 +2198,7 @@ Data structure
 Java is an OOP language, so to install the algorithm in Java, we need to
  realize the incident notations to the algorithm (such as term, graph) as
  Java classes.
- Following are class diagrams realated to these notations:
+ Following are class diagrams related to these notations:
 \end_layout
 
 \begin_layout Subsubsection
@@ -2206,7 +2259,7 @@ ProperTerm is class for terms
 \emph on
 t(s)
 \emph default
- 
+ with 
 \begin_inset Formula $s=s_{1}\oplus s_{2}$
 \end_inset
 
@@ -2341,10 +2394,10 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-The program basically meets our advisor's requirements, it is able to detemines
+The program basically meets our advisor's requirements, it is able to determines
  exactly relative clique width of a graph with respect to a linear reduced
  term.
- However, as mentioned above, there are still many things waiting to impove,
+ However, as mentioned above, there are still many things waiting to improve,
  especially about usability of the program.
 \begin_inset Newline newline
 \end_inset

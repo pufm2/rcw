@@ -51,6 +51,12 @@ public class Main {
 
         
         
+        Term term = constructTerm(rTerm, edgeList);
+        output.println(term);
+
+    }
+
+    protected static Term constructTerm(String rTerm, String edgeList) throws RcwException {
         Graph graph = new Graph(edgeList);
         
         ReducedTermParser parser = new ReducedTermParser(
@@ -65,7 +71,6 @@ public class Main {
         
         RelativeCliqueWidth rcw = new RelativeCliqueWidth();
         Term term = rcw.constructTerm((SimpleNode) node.jjtGetChild(0), graph.getVertexSet());
-        output.println(term);
-
+        return term;
     }
 }
