@@ -1,0 +1,24 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory></directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>*.bat</include>
+        <include>*.sh</include>
+        <include>input.txt</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
