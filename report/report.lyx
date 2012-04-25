@@ -1789,11 +1789,54 @@ The list of edges of the graph, for example:
 \end_layout
 
 \begin_layout Itemize
-A linear reduced term r, for example
+A linear reduced term r.
+ We denote graph operators in ASCII sequence as follows:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
 \emph on
- 
+oplus(..., ...)
 \emph default
-oplus(oplus(oplus(oplus(1, oplus (2, 3)), 4) , 5), 6).
+ for 
+\begin_inset Formula $...\oplus...$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+rel_a_b
+\emph default
+ for 
+\begin_inset Formula $\rho_{a\rightarrow b}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+add_a_b
+\emph default
+ for 
+\begin_inset Formula $\eta_{a,b}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Ror example:
+\emph on
+ r
+\emph default
+ = oplus(oplus(oplus(oplus(1, oplus (2, 3)), 4) , 5), 6).
  To leverage the input readability, two types of parenthesis, 
 \emph on
 ()
