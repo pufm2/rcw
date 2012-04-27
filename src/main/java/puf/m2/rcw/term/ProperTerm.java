@@ -10,14 +10,14 @@ import puf.m2.rcw.operator.Operator;
 
 public class ProperTerm extends Term {
     private Term left;
-    private APort right;
+    private Port right;
     private List<Operator> operatorList;
     
     public ProperTerm() {
         operatorList = new Stack<Operator>();
     }
     
-    public ProperTerm(Term left, APort right, VertexSet vertexSet, LabelSet usedLabels,
+    public ProperTerm(Term left, Port right, VertexSet vertexSet, LabelSet usedLabels,
                         LabelSet gammaImage, VertexFamily partites, List<Operator> operatorList) {
         
         super(vertexSet, usedLabels, gammaImage, partites);
@@ -35,11 +35,11 @@ public class ProperTerm extends Term {
         this.left = left;
     }
 
-    public APort getRight() {
+    public Port getRight() {
         return right;
     }
 
-    public void setRight(APort right) {
+    public void setRight(Port right) {
         this.right = right;
     }
 

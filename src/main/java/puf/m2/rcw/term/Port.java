@@ -4,14 +4,14 @@ import puf.m2.rcw.graph.LabelSet;
 import puf.m2.rcw.graph.VertexFamily;
 import puf.m2.rcw.graph.VertexSet;
 
-public class APort extends Term {
+public class Port extends Term {
 
     private char label;
-    public APort() {
+    public Port() {
         
     }
     
-    public APort(VertexSet vertexSet, LabelSet usedLabels,
+    public Port(VertexSet vertexSet, LabelSet usedLabels,
             LabelSet gammaMapping, VertexFamily partites, char label) {
         super(vertexSet, usedLabels, gammaMapping, partites);
         this.label = label;

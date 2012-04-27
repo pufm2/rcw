@@ -50,18 +50,18 @@ public class Term {
         if (term instanceof ProperTerm) {
             ProperTerm properTerm = (ProperTerm) term;
             st = toString(properTerm.getLeft(), st);
-            APort aPort = properTerm.getRight();
-            Vertex v = aPort.getVertexSet().toArray()[0];
-            st = "oplus(" + st + "," + aPort.getLabel() + "(" + v.getName() + ")" + ")";
+            Port port = properTerm.getRight();
+            Vertex v = port.getVertexSet().toArray()[0];
+            st = "oplus(" + st + "," + port.getLabel() + "(" + v.getName() + ")" + ")";
             for (Operator operator : properTerm.getOperatorList()) {
                 operator.setOperands(st);
                 st = operator.toString();
             }
             return st;
         } else {
-            APort aPort = (APort) term;
-            Vertex v = aPort.getVertexSet().toArray()[0];
-            return aPort.getLabel() + "(" + v.getName() + ")";
+            Port port = (Port) term;
+            Vertex v = port.getVertexSet().toArray()[0];
+            return port.getLabel() + "(" + v.getName() + ")";
         }
 
     }

@@ -16,7 +16,7 @@ import puf.m2.rcw.reducedterm.parser.AstReducedTerm;
 import puf.m2.rcw.reducedterm.parser.AstVertex;
 import puf.m2.rcw.reducedterm.parser.Node;
 import puf.m2.rcw.reducedterm.parser.SimpleNode;
-import puf.m2.rcw.term.APort;
+import puf.m2.rcw.term.Port;
 import puf.m2.rcw.term.ProperTerm;
 import puf.m2.rcw.term.Term;
 import puf.m2.rcw.utils.SetList;
@@ -50,33 +50,33 @@ public class RelativeCliqueWidth {
             }
         } else {
 
-            snTerm = constructAPort((AstVertex) sn.jjtGetChild(0), graphVs,
+            snTerm = constructPort((AstVertex) sn.jjtGetChild(0), graphVs,
                     snTerm);
         }
 
-        APort aPort = constructAPort(av, graphVs, snTerm);
+        Port port = constructPort(av, graphVs, snTerm);
 
         LabelSet usedlabel = LabelSet.union(snTerm.getUsedLabels(),
-                aPort.getUsedLabels());
+                port.getUsedLabels());
 
         snTerm.getVertexSet().cleanAdjacency();
         VertexSet termVs = VertexSet.union(snTerm.getVertexSet(),
-                aPort.getVertexSet());
+                port.getVertexSet());
         constructHs(termVs, graphVs);
         VertexFamily partites = constructHsPartites(VertexFamily.union(
-                snTerm.getPartites(), aPort.getPartites()));
+                snTerm.getPartites(), port.getPartites()));
         LabelSet gammaImage = new LabelSet();
-        List<Operator> operatorList = constructOperatorList(snTerm, aPort,
+        List<Operator> operatorList = constructOperatorList(snTerm, port,
                 partites, graphVs, gammaImage);
 
-        Term term = new ProperTerm(snTerm, aPort, termVs, usedlabel,
+        Term term = new ProperTerm(snTerm, port, termVs, usedlabel,
                 gammaImage, partites, operatorList);
         // System.out.println(toString(term, ""));
         return term;
 
     }
 
-    private APort constructAPort(AstVertex av, VertexSet graphVs,
+    private Port constructPort(AstVertex av, VertexSet graphVs,
             Term companyingTerm) {
         String name = av.getName();
 
@@ -100,9 +100,9 @@ public class RelativeCliqueWidth {
         VertexFamily partites = new VertexFamily();
         partites.add(vs);
 
-        APort aPort = new APort(vs, ls, ls, partites, label);
+        Port port = new Port(vs, ls, ls, partites, label);
 
-        return aPort;
+        return port;
     }
 
     private void constructHs(VertexSet vs, VertexSet graphVs) {
@@ -161,16 +161,16 @@ public class RelativeCliqueWidth {
         return hsPartites;
     }
 
-    private List<Operator> constructOperatorList(Term term, APort aPort,
+    private List<Operator> constructOperatorList(Term term, Port port,
             VertexFamily partites, VertexSet graphVs, LabelSet gammaImage) {
         List<Operator> operatorList = new SetList<Operator>();
 
-        Vertex aPortVertex = aPort.getVertexSet().toArray()[0];
-        Vertex uInGraph = graphVs.get(aPortVertex.getName());
+        Vertex portVertex = port.getVertexSet().toArray()[0];
+        Vertex uInGraph = graphVs.get(portVertex.getName());
         for (Vertex v : term.getVertexSet().vertices()) {
             Vertex vInGraph = graphVs.get(v.getName());
             if (uInGraph.getAdjacentVertices().contains(vInGraph)) {
-                operatorList.add(new EdgeAddition(aPortVertex.getLabel(), v
+                operatorList.add(new EdgeAddition(portVertex.getLabel(), v
                         .getLabel()));
             }
         }
