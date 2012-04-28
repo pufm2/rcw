@@ -42,14 +42,14 @@
                 </executions>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
+        <testResources>
+            <testResource>
                 <directory>src/test/resource</directory>
                 <includes>
                     <include>**/*.txt </include>
                 </includes>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
     </build>
     
 </project>
