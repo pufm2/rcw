@@ -14,6 +14,7 @@
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 \usepackage{listings}
 \usepackage[english]{babel} % for table %
+\usepackage{seqsplit}
 
 \begin{document}
 \title {Implementation of a polynomial time algorithm to determine relative clique-width of a graph}
@@ -161,7 +162,7 @@ it means \textit {$\gamma_{t(s)}$}assigns the same label to two vertices iff the
 \item \textit {$\gamma_{t(s_{1})}\cap\gamma_{t(s_{2})}=\emptyset$} \end{enumerate}
 \end{enumerate}
 
-Following is pseudo-code of a recursive function constructing a term for a linear reduced term {$s=rTerm\oplus vertex$}. This function uses some notations of Java programming language
+Algorithm 1 is pseudo-code of a recursive function constructing a term for a linear reduced term {$s=rTerm\oplus vertex$}. This function uses some notations of Java programming language
 
 \begin{algorithm}
 \caption{Term constructing algorithm}
@@ -197,7 +198,7 @@ If $s=s_{1}\oplus s_{2}$ is a sub-term of r, then every partite sets of \textit 
 \end{quotation}
 
 \begin{quotation}
-Call $U_{s_{1}}$and $U_{s_{2}}$is sets of partite set of $H_{s_{1}}$ and $H_{s_{2}}$, we have Algorithm 1 as follows:
+Call $U_{s_{1}}$and $U_{s_{2}}$is sets of partite set of $H_{s_{1}}$ and $H_{s_{2}}$, we have Algorithm 2 as follows:
 \end{quotation}
 
 \begin{algorithm}[H]
@@ -349,8 +350,8 @@ The program takes following as input:
 For example\textit { }oplus(oplus(oplus(oplus(1,oplus (2, 3)), 4) , 5),6). To leverage the input readability, two types of parenthesis, \textit {()} and \textit {{[}{]}} are supported, it means someone can input oplus{[}oplus{[}oplus(oplus(1, oplus (2, 3)),4), 5{]}, 6{]}
 \end{itemize}
 
-The program will output a term \textit t such that \textit {$val(t)=(G,\gamma)$} and \textit {red(t) = r} and the number of labels used in t is minimum. For example, with the reduced term r as above, the program will output: \textit{rel\_b\_a(rel\_c\_a(add\_c\_b(oplus(rel\_c\_a(add\_b\_c(oplus(rel\_b\_a(\\
-add\_c\_a(oplus(rel\_c\_b(add\_c\_b(oplus(add\_b\_a(oplus(a(3),b(2))),c(1)))),c(4)))),b(5)))),c(6)))))}
+The program will output a term \textit t such that \textit {$val(t)=(G,\gamma)$} and \textit {red(t) = r} and the number of labels used in t is minimum. For example, with the reduced term r as above, the program will output: \textit{\seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_c\_a[add\_b\_c[oplus(rel\_b\_a[add\_c\_a[oplus(rel\_c\_b[add\_c\_b[oplus(add\_b\_a[oplus(a(3),b(2))],c(1))]],c(4))]],b(5))]],c(6))]]]}}
+
 
 %section 3.2 Program specification}%
 \subsection{Program specification}
@@ -552,70 +553,63 @@ In this section, we introduce some more test cases for the first graph, which wa
 \item Test case 1
 	\begin{itemize}
 		\item Edges: ((1,2),(2,3),(3,4),(4,5),(5,6))
-		\item Sequence of vertices: 1,2,3,4,5,6
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(oplus(oplus(oplus(1,oplus(2,3)),4),5),6)
-		\item Term: rel\_b\_a(rel\_c\_a(add\_c\_b(oplus(rel\_c\_a(add\_b\_c(oplus(rel\_b\_a(add\_c\_a(oplus( \\
-rel\_c\_b( add\_c\_b(oplus(add\_b\_a(oplus(a(3),b(2))),c(1)))),c(4)))),b(5)))),c(6)))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_c\_a[add\_b\_c[oplus(rel\_b\_a[add\_c\_a[oplus(rel\_c\_b[add\_c\_b[oplus(add\_b\_a[oplus(a(3),b(2))],c(1))]],c(4))]],b(5))]],c(6))]]]}
 		\item Number of labels: 3
 	\end{itemize}
 
 \item Test case 2
 	\begin{itemize}
 		\item Edges: ((6,5),(5,4),(4,3),(3,2),(2,1))
-		\item Sequence of vertices: 1,4,6,2,5,3
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(1, oplus(4, oplus(6, oplus(2, oplus(5, 3)))))
-		\item Term: rel\_b\_a(rel\_c\_a(add\_b\_c(oplus(rel\_b\_a(rel\_d\_a(add\_b\_a(add\_b\_a(oplus(rel\_b\_a( \\
-add\_d\_b(oplus(add\_c\_a(oplus(oplus(a(3),b(5)),c(2))),d(6)))),b(4)))))),b(1))))) 
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_c[oplus(rel\_d\_a[rel\_b\_a[add\_b\_a[oplus(rel\_b\_a[add\_d\_b[oplus(add\_c\_a[oplus(oplus(a(3),b(5)),c(2))],d(6))]],b(4))]]],b(1))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 3
 	\begin{itemize}
-		\item Edges: ((1,2),(2,3),(3,4),(4,5),(5,6))		
-		\item Sequence of vertices: 1,4,2,5,3,6
+		\item Edges: ((1,2),(2,3),(3,4),(4,5),(5,6))
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(1, oplus(4, oplus(2, oplus(5, oplus(3, 6)))))
-		\item Term: rel\_b\_a(rel\_d\_a(add\_b\_d(oplus(rel\_c\_a(rel\_b\_a(add\_c\_b(add\_c\_b(oplus(rel\_c\_b( \\
-add\_d\_b(oplus(add\_c\_a(oplus(oplus(a(6),b(3)),c(5))),d(2)))),c(4)))))),b(1)))))
+		\item Term: \seqsplit{rel\_d\_a[rel\_b\_a[add\_b\_d[oplus(rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_c\_b[add\_d\_b[oplus(add\_c\_a[oplus(oplus(a(6),b(3)),c(5))],d(2))]],c(4))]]],b(1))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 4
 	\begin{itemize}
 		\item Edges: ((1,2),(2,3),(3,4),(4,5),(5,6))
-		\item Sequence of vertices: 1,3,5,6,4,2
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(1, oplus(3, oplus(5, oplus(6, oplus(4, 2)))))
-		\item Term: rel\_c\_a(rel\_b\_a(add\_c\_a(oplus(rel\_c\_b(rel\_d\_b(add\_d\_b(add\_d\_a(oplus(rel\_d\_c( \\
-add\_d\_b(add\_d\_c( oplus(oplus(oplus(a(2),b(4)),c(6)),d(5))))),d(3)))))),c(1)))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_a[oplus(rel\_d\_b[rel\_c\_b[add\_d\_b[add\_d\_a[oplus(rel\_d\_c[add\_d\_c[add\_d\_b[oplus(oplus(oplus(a(2),b(4)),c(6)),d(5))]]],d(3))]]]],c(1))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 5
 	\begin{itemize}
 		\item Edges: ((4,3),(4,5),(6,5),(1,2),(2,3))
-		\item Sequence of vertices: 1,3,6,5,4,2
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(1, oplus(3, oplus(6, oplus(5, oplus(4, 2)))))
-		\item Term: rel\_c\_a(rel\_b\_a(add\_c\_a(oplus(rel\_c\_b(rel\_d\_b(add\_d\_b(add\_d\_a(oplus(rel\_d\_c( \\
-add\_d\_c(oplus(add\_c\_b(oplus(oplus( a(2),b(4)),c(5))),d(6)))),d(3)))))),c(1)))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_a[oplus(rel\_d\_b[rel\_c\_b[add\_d\_b[add\_d\_a[oplus(rel\_d\_c[add\_d\_c[oplus(add\_c\_b[oplus(oplus(a(2),b(4)),c(5))],d(6))]],d(3))]]]],c(1))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 6
 	\begin{itemize}
 		\item Edges: ((5,4),(6,5),(2,1),(3,2),(4,3))
-		\item Sequence of vertices: 6,4,2,5,3,1
-		\item Linear reduced term: oplus(6, oplus(5, oplus(1, oplus(oplus(3,4),2)
-		\item Term: rel\_c\_a(rel\_b\_a(add\_b\_c(oplus(rel\_b\_a(add\_c\_a(oplus(rel\_d\_b(rel\_c\_b(add\_d\_c( \\
-oplus(add\_c\_b(oplus(add\_b\_a(oplus( a(4),b(3))),c(2))),d(1))))),c(5)))),b(6))))) 
+		\item Sequence of vertices: 
+		\item Linear reduced term: oplus(6, oplus(5, oplus(1, oplus(oplus(3,4),2))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_c[oplus(rel\_b\_a[add\_c\_a[oplus(rel\_d\_b[rel\_c\_b[add\_d\_c[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(4),b(3))],c(2))],d(1))]]],c(5))]],b(6))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 7
 	\begin{itemize}
 		\item Edges: ((1,2),(6,5),(4,5),(3,4),(2,3))
-		\item Sequence of vertices: 2,3,5,1,6,4
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(oplus(oplus(1,oplus(oplus(3,5),2)),6),4)
-		\item Term: rel\_b\_a(rel\_c\_a(add\_b\_a(add\_b\_a(oplus(rel\_d\_c(rel\_b\_a(add\_d\_a(oplus(rel\_d\_c( \\
-add\_d\_c(oplus(add\_c\_b(oplus(oplus( a(5),b(3)),c(2))),d(1)))),d(6))))),b(4))))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_a[oplus(rel\_d\_c[rel\_b\_a[add\_d\_a[oplus(rel\_d\_c[add\_d\_c[oplus(add\_c\_b[oplus(oplus(a(5),b(3)),c(2))],d(1))]],d(6))]]],b(4))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 \end{itemize}
@@ -634,76 +628,63 @@ The second graph is
 \item Test case 1
 	\begin{itemize}
 		\item Edges: ((1,2),(1,3),(2,3),(2,4),(3,4),(3,5),(4,6),(5,6))
-		\item Sequence of vertices: 1,2,3,4,5,6
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(1, oplus(2, oplus(3, oplus(4, oplus(5, 6)))))
-		\item Term: rel\_c\_a(rel\_b\_a(add\_c\_b(add\_c\_b(oplus(rel\_c\_a(rel\_d\_b(add\_b\_c(add\_b\_d(oplus( \\ rel\_b\_a(add\_d\_c(add\_d\_b(oplus(add\_c\_a(oplus(add\_b\_a(oplus(a(6),b(5))),c(4))),d(3))))), \\
-b(2)))))),c(1))))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_d\_b[rel\_c\_a[add\_b\_d[add\_b\_c[oplus(rel\_b\_a[add\_d\_c[add\_d\_b[oplus(add\_c\_a[oplus(add\_b\_a[oplus(a(6),b(5))],c(4))],d(3))]]],b(2))]]]],c(1))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 2
 	\begin{itemize}
 		\item Edges: ((2,3),(2,4),(3,1),(1,2),(4,3),(6,4),(6,5),(3,5))
-		\item Sequence of vertices: 2,6,3,5,4,1
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(2,oplus(6,oplus(oplus(oplus(3,5),4),1)))
-		\item Term: rel\_c\_a(rel\_b\_a(add\_c\_b(add\_c\_b(add\_c\_b(oplus(rel\_c\_b(rel\_d\_a(add\_d\_c( \\
-add\_d\_a(oplus(rel\_d\_b(add\_d\_b(oplus(add\_c\_b(oplus(add\_b\_a(oplus(a(5),b(3))),c(4))), \\
-d(1)))),d(6)))))), c(2)))))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_d\_a[rel\_c\_b[add\_d\_c[add\_d\_a[oplus(rel\_d\_b[add\_d\_b[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(5),b(3))],c(4))],d(1))]],d(6))]]]],c(2))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 3
 	\begin{itemize}
-		\item Edges: ((3,4),(4,6),(6,5),(5,3),(4,2),(2,1),(2,3),(1,3))		
-		\item Sequence of vertices: 1,3,5,6,4,2
+		\item Edges: ((3,4),(4,6),(6,5),(5,3),(4,2),(2,1),(2,3),(1,3))
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(oplus(oplus(oplus(1,oplus(3,5)),6),4),2)
-		\item Term: rel\_c\_a(rel\_b\_a(add\_c\_b(add\_c\_b(add\_c\_b(oplus(rel\_e\_b(rel\_c\_b(rel\_d\_a( \\
-add\_e\_d(add\_e\_b(oplus(add\_d\_a(oplus(add\_c\_b(oplus(add\_b\_a(oplus(a(5),b(3))),c(1))), \\
-d(6))),e(4))))))),c(2)))))))
-		\item Number of labels: 4
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_e\_b[rel\_d\_a[rel\_c\_b[add\_e\_d[add\_e\_b[oplus(add\_d\_a[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(5),b(3))],c(1))],d(6))],e(4))]]]]],c(2))]]]}
+		\item Number of labels: 5
 	\end{itemize}
 
 \item Test case 4
 	\begin{itemize}
 		\item Edges: ((1,3),(3,5),(5,6),(6,4),(4,2),(2,1),(3,2),(3,4))
-		\item Sequence of vertices: 4,6,3,5,1,2
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(4,oplus(6,oplus(oplus(oplus(3,5),1),2)))
-		\item Term: rel\_c\_a(rel\_b\_a(add\_c\_b(add\_c\_b(add\_c\_b(oplus(rel\_d\_b(rel\_c\_a(add\_d\_a( \\ 
-oplus(rel\_d\_b(add\_d\_c(add\_d\_b(oplus(add\_c\_b(oplus(add\_b\_a(oplus(a(5),b(3))),c(1))), \\
-d(2))))),d(6))))),c(4)))))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_d\_b[rel\_c\_a[add\_d\_a[oplus(rel\_d\_b[add\_d\_c[add\_d\_b[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(5),b(3))],c(1))],d(2))]]],d(6))]]],c(4))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 
 \item Test case 5
 	\begin{itemize}
 		\item Edges: ((2,4),(4,6),(1,3),(3,5),(5,6),(2,1),(3,2),(3,4))
-		\item Sequence of vertices: 2,4,6,5,3,1
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(2,oplus(4,oplus(oplus(oplus(6,5),3),1)))
-		\item Term: rel\_b\_a(rel\_c\_a(add\_b\_c(add\_b\_c(add\_b\_c(oplus(rel\_b\_a(rel\_e\_c(rel\_d\_c( \\
-add\_e\_b(add\_e\_c(oplus(add\_d\_c(oplus(add\_c\_a(oplus(add\_b\_a(oplus(a(5),b(6))),c(3))), \\
-d(1))),e(4))))))),b(2)))))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_c[oplus(rel\_e\_c[rel\_d\_c[rel\_b\_a[add\_e\_c[add\_e\_b[oplus(add\_d\_c[oplus(add\_c\_a[oplus(add\_b\_a[oplus(a(5),b(6))],c(3))],d(1))],e(4))]]]]],b(2))]]]}
 		\item Number of labels: 5
 	\end{itemize}
 
 \item Test case 6
 	\begin{itemize}
-		\item Edges: ((3,1),(3,2),(3,4),(3,5),(1,2),(5,6),(4,2),(4,6))		
-		\item Sequence of vertices: 3,5,2,1,4,6
+		\item Edges: ((3,1),(3,2),(3,4),(3,5),(1,2),(5,6),(4,2),(4,6))
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(3,oplus(5,oplus(2,oplus(oplus(1,4),6))))
-		\item Term: rel\_c\_a(rel\_b\_a(add\_b\_a(add\_b\_a(add\_b\_a(add\_b\_a(oplus(rel\_b\_a(add\_b\_c \\ 
-(oplus(rel\_b\_a(add\_b\_a(add\_b\_a(oplus(rel\_b\_a(add\_c\_a(oplus(oplus(a(4),b(1)),c(6)))), \\
-b(2))))),b(5)))),b(3))))))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_a[oplus(rel\_b\_a[add\_b\_c[oplus(rel\_b\_a[add\_b\_a[oplus(rel\_b\_a[add\_c\_a[oplus(oplus(a(4),b(1)),c(6))]],b(2))]],b(5))]],b(3))]]]}
 		\item Number of labels: 3
 	\end{itemize}
 
 \item Test case 7
 	\begin{itemize}
-		\item Edges: ((6,5),(5,3),(3,1),(1,2),(2,4),(4,6),(4,3),(3,2))		
-		\item Sequence of vertices: 6,5,4,1,2,3
+		\item Edges: ((6,5),(5,3),(3,1),(1,2),(2,4),(4,6),(4,3),(3,2))
+		\item Sequence of vertices: 
 		\item Linear reduced term: oplus(6,oplus(5,oplus(4,oplus(1,oplus(2,3)))))
-		\item Term: rel\_c\_a(rel\_b\_a(add\_b\_c(add\_b\_c(oplus(rel\_d\_c(rel\_b\_a(add\_c\_a(oplus(rel\_c\_b( \\
-add\_d\_b( add\_d\_a(oplus(add\_c\_b(add\_c\_a(oplus(add\_b\_a(oplus(a(3),b(2))),c(1)))), \\
-d(4))))), c(5))))),b(6))))))
+		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_c[oplus(rel\_d\_c[rel\_b\_a[add\_c\_a[oplus(rel\_c\_b[add\_d\_b[add\_d\_a[oplus(add\_c\_b[add\_c\_a[oplus(add\_b\_a[oplus(a(3),b(2))],c(1))]],d(4))]]],c(5))]]],b(6))]]]}
 		\item Number of labels: 4
 	\end{itemize}
 \end{itemize}
