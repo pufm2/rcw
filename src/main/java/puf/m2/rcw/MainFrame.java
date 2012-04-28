@@ -19,10 +19,14 @@ import puf.m2.rcw.term.Term;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class MainFrame extends JFrame {
 
@@ -35,7 +39,7 @@ public class MainFrame extends JFrame {
     private JTextField textUsedLabels;
 
     private final JFileChooser fc = new JFileChooser();
-    private final MainFrame me = this;
+    private final MainFrame thisFrame = this;
     /**
      * Create the frame.
      */
@@ -108,19 +112,19 @@ public class MainFrame extends JFrame {
         JButton btnLoad = new JButton("Load");
         btnLoad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int result = fc.showOpenDialog(me);
+                int result = fc.showOpenDialog(thisFrame);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     DataInputStream dis;
                     try {
                         dis = new DataInputStream(new FileInputStream(fc.getSelectedFile()));
                     
-                    BufferedReader br = new BufferedReader(new InputStreamReader(dis));
-
-                    textVerNumber.setText(br.readLine());
-                    textReducedTerm.setText(br.readLine());
-                    textEdges.setText(br.readLine());
-                    
-                    dis.close();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(dis));
+    
+                        textVerNumber.setText(br.readLine());
+                        textReducedTerm.setText(br.readLine());
+                        textEdges.setText(br.readLine());
+                        
+                        dis.close();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, "Invalid File", "Alert", JOptionPane.ERROR_MESSAGE); 
                     }
@@ -135,6 +139,23 @@ public class MainFrame extends JFrame {
         JButton btnSave = new JButton("Save");
         btnSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                int result = fc.showSaveDialog(thisFrame);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    DataOutputStream dos;
+                    try {
+                        dos = new DataOutputStream(new FileOutputStream(fc.getSelectedFile()));
+                        
+                        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(dos));
+                        bw.write(textVerNumber.getText() + "\n");
+                        bw.write(textReducedTerm.getText() + "\n");
+                        bw.write(textEdges.getText() + "\n");
+                        bw.write(textTerm.getText() + "\n");
+                        
+                        bw.close();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Invalid File", "Alert", JOptionPane.ERROR_MESSAGE); 
+                    }
+                }
             }
         });
         sl_contentPane.putConstraint(SpringLayout.NORTH, btnSave, 7, SpringLayout.SOUTH, btnLoad);
