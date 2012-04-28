@@ -7,7 +7,7 @@ public class EdgeAddition extends UnaryOperator {
     }
 
     public String toString() {
-        return "add_" + l1 + "_" + l2 + "(" + operand + ")";
+        return "add_" + l1 + "_" + l2 + "[" + operand + "]";
     }
     
     public boolean equals(Object o) {

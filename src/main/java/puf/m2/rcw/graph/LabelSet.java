@@ -30,6 +30,10 @@ public class LabelSet {
         labelList.add(i, label);
     }
     
+    public int size() {
+        return labelList.size();
+    }
+    
     public void union(LabelSet ls) {
         for (Character label : ls.labelList) {
             add(label);

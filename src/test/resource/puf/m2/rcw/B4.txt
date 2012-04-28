@@ -1,4 +1,4 @@
 6
 oplus(4,oplus(6,oplus(oplus(oplus(3,5),1),2)))
 ((1,3),(3,5),(5,6),(6,4),(4,2),(2,1),(3,2),(3,4))
-rel_c_a(rel_b_a(add_c_b(oplus(rel_d_b(rel_c_a(add_d_a(oplus(rel_d_b(add_d_c(add_d_b(oplus(add_c_b(oplus(add_b_a(oplus(a(5),b(3))),c(1))),d(2))))),d(6))))),c(4)))))
+rel_c_a[rel_b_a[add_c_b[oplus(rel_d_b[rel_c_a[add_d_a[oplus(rel_d_b[add_d_c[add_d_b[oplus(add_c_b[oplus(add_b_a[oplus(a(5),b(3))],c(1))],d(2))]]],d(6))]]],c(4))]]]

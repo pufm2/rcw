@@ -8,7 +8,7 @@ public class Relabelling extends UnaryOperator {
     
     public String toString() {
         
-        return "rel_" + l1 + "_" + l2 + "(" + operand + ")";
+        return "rel_" + l1 + "_" + l2 + "[" + operand + "]";
     }
     
     public boolean equals(Object o) {

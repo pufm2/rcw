@@ -25,7 +25,14 @@ public class RelativeCliqueWidthTest {
             dis.close();
             
             Term term = Main.constructTerm(rTerm, edgeList);
+            System.out.println(resourceName + ": \n");
+            System.out.println("\t\t\\item Edges: " + edgeList);
+            System.out.println("\t\t\\item Sequence of vertices: ");
+            System.out.println("\t\t\\item Linear reduced term: " + rTerm);
+            System.out.println("\t\t\\item Term: \\seqsplit{" + term + "}");
+            System.out.println("\t\t\\item Number of labels: " + term.getUsedLabels().size() + "\n");
             assertEquals(result, term.toString());
+            
         }
     }
 
