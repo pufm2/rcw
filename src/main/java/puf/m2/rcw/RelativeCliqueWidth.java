@@ -1,5 +1,6 @@
 package puf.m2.rcw;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -71,7 +72,7 @@ public class RelativeCliqueWidth {
 
         Term term = new ProperTerm(snTerm, port, termVs, usedlabel,
                 gammaImage, partites, operatorList);
-        // System.out.println(toString(term, ""));
+        //System.out.println(term);
         return term;
 
     }
@@ -170,8 +171,7 @@ public class RelativeCliqueWidth {
         for (Vertex v : term.getVertexSet().vertices()) {
             Vertex vInGraph = graphVs.get(v.getName());
             if (uInGraph.getAdjacentVertices().contains(vInGraph)) {
-                operatorList.add(new EdgeAddition(portVertex.getLabel(), v
-                        .getLabel()));
+                operatorList.add(new EdgeAddition(portVertex.getLabel(), v.getLabel()));
             }
         }
 
@@ -188,6 +188,8 @@ public class RelativeCliqueWidth {
             gammaImage.add(label);
 
         }
+        
+        Collections.sort(operatorList, Operator.COMPARATOR);
         return operatorList;
     }
 

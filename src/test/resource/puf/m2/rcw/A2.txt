@@ -1,0 +1,4 @@
+6
+oplus(1, oplus(4, oplus(6, oplus(2, oplus(5, 3)))))
+((6,5),(5,4),(4,3),(3,2),(2,1))
+rel_c_a(rel_b_a(add_b_c(oplus(rel_d_a(rel_b_a(add_b_a(oplus(rel_b_a(add_d_b(oplus(add_c_a(oplus(oplus(a(3),b(5)),c(2))),d(6)))),b(4))))),b(1)))))

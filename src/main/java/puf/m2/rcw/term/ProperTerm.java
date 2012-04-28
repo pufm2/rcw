@@ -50,5 +50,31 @@ public class ProperTerm extends Term {
     public void setOperatorList(List<Operator> operatorList) {
         this.operatorList = operatorList;
     }
+    
+    
+    public boolean equals(Object o) {
+        if (!(o instanceof ProperTerm)) {
+            return false;
+        }
+        
+        ProperTerm pTerm = (ProperTerm) o;
+        
+        if (right.equals(pTerm.right)) {
+            return false;
+        }
+        
+        if (operatorList.size() != pTerm.operatorList.size()) {
+            return false;
+        }
+        
+        for (Operator op : pTerm.operatorList) {
+            if (!operatorList.contains(op)) {
+                return false;
+            }
+        }
+        
+        return left.equals(pTerm.left);
+                
+    }
 
 }
