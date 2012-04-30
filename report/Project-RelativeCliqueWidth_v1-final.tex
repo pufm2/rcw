@@ -129,9 +129,9 @@ This term denotes the following rooted binary tree:\\
 In what follows, we introduce a very important notation used in the algorithm, let \textit {$N_{G}(u)$} be the neighborhood of vertex \textit {u} in graph \textit {G} 
 
 \begin{description}
-\item [{Definition}] \cite {vadim-lozin} For a sub-term \textit {s} of \textit {r}, let \textit {$V_{s}$} denote the set of vertices in s. We define a graph \textit {$H_{s}=(V_{s}, E_{s})$} with $uv\in E_{s}\Longleftrightarrow N_{G}(u)\setminus V_{s}\neq N_{G}(v)\setminus V_{s}$
+\item [{Definition}] \cite {vadim-lozin} For a sub-term \textit {s} of \textit {r}, let \textit {$V_{s}$} denote the set of vertices in s. We define a graph \textit {$H_{s}=(V_{s}, E(H_{s})$} with $uv\in E(H_{s})\Longleftrightarrow N_{G}(u)\setminus V_{s}\neq N_{G}(v)\setminus V_{s}$
 \end{description}
-\textit{$H_{s}$} is a complete multi-partite graph (lemma 1 in \cite{vadim-lozin}), let \textit{$E_{s}$} be the complement graph of \textit{$H_{s}$}, so we have edge relation is an equivalent relation on \textit{$E_{s}$}
+\textit{$H_{s}$} is a complete multi-partite graph (lemma 1 in \cite{vadim-lozin}), let \textit{$H_{s}'$} be the complement graph of \textit{$H_{s}$}, so we have edge relation is an equivalent relation on \textit{$H_{s}'$}
 
 % section 2.4 Algorithm%
 \subsection{Algorithm}
@@ -192,18 +192,18 @@ Call $U_{s_{1}}$and $U_{s_{2}}$is sets of partite set of $H_{s_{1}}$ and $H_{s_{
 \begin{algorithmic}[1]
 	\State $U\gets U_{s_{1}} \cup U_{s_{2}}$ 
 	\While{$U\neq\emptyset$}
-		\State $partiteSets\leftarrow\emptyset$
+		\State $partiteSets\leftarrow\emptyset$ \Comment{partiteSets will contain partite sets of $H_{s}$ }
 		\ForAll{$u\in U$}
 			\State $vertexU\gets u.get(0)$
 			\ForAll{$vertex\in vertexSet$}
 				\State $contained\gets true$
-				\If{$(vertex,vertexU)\in H_{s}$}
+				\If{$(vertex,vertexU)\in E(H_{s})$}
 					\State $contained\gets false$
 					\State break
 				\EndIf
 			\EndFor
 			\If{$contained$}
-				\State $partiteSets\gets u$
+				\State $partiteSets.add(u)$
 				\State $U.remove(u)$
 			\EndIf
 		\EndFor
@@ -443,7 +443,7 @@ Our source code is hosted on github at https://github.com/pufm2/rcw
 
 % RESULTS %
 \section {Result}
-We tested this program with some data tests as follows, program works fine all cases. You can find these tests in the Appendix section
+We tested this program with some data tests as follows, program works fine all cases. You can find these tests in Appendix B and C
 
 
 % CONCLUSION %
@@ -460,7 +460,7 @@ Clique width as well as other parameters of graph is an interesting subject. Res
 
 % ACKNOWLEDGEMENTS %
 \section {Acknowledgements}
-We would like to say a big thank to Professor Bruno COURCELLE – who has raised a very interesting project for us, graph decomposition, clique-width and their related problems were not familiar for us before and were not easy for us during the project. But with a continuous and enthusiastic support from Professor Courcell, we overcame many troubles and found our pleasure for the subject.\newline\newline
+We would like to say a deep thank to Professor Bruno COURCELLE – who has raised a very interesting project for us, graph decomposition, clique-width and their related problems were not familiar for us before and were not easy for us during the project. But with a continuous and enthusiastic support from Professor Courcell, we overcame many troubles and found our pleasure for the subject.\newline\newline
 Needless to say there are also many thanks from us  to Professor Maylis DELEST- who taught us how to plan a researching project and write a professional report, Professor Olivier BAUDON - who spent a lot of time to make us clear about this subject when he came to Viet Nam.\newline\newline
 We also thank our classmates for their encouragements during our project.
 
@@ -488,7 +488,7 @@ We also thank our classmates for their encouragements during our project.
 \addcontentsline{toc}{part}{Appendix}
 \appendix
 
-\section{Full details steps of the practical example above}
+\section{Full details steps of the practical example in subsection 2.5}
 
 \begin{enumerate}
 \item \textit {s = 2}
@@ -587,7 +587,7 @@ In this section, we introduce some more test cases for the first graph, which wa
 \item Test case 1
 	\begin{itemize}
 		\item Edges: ((1,2),(2,3),(3,4),(4,5),(5,6))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 1, 2, 3, 4, 5, 6
 		\item Linear reduced term: oplus(oplus(oplus(oplus(1,oplus(2,3)),4),5),6)
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_c\_a[add\_b\_c[oplus(rel\_b\_a[add\_c\_a[oplus(rel\_c\_b[add\_c\_b[oplus(add\_b\_a[oplus(a(3),b(2))],c(1))]],c(4))]],b(5))]],c(6))]]]}
 		\item Number of labels: 3
@@ -605,7 +605,7 @@ In this section, we introduce some more test cases for the first graph, which wa
 \item Test case 3
 	\begin{itemize}
 		\item Edges: ((1,2),(2,3),(3,4),(4,5),(5,6))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 1, 4, 2, 5, 3, 6
 		\item Linear reduced term: oplus(1, oplus(4, oplus(2, oplus(5, oplus(3, 6)))))
 		\item Term: \seqsplit{rel\_d\_a[rel\_b\_a[add\_b\_d[oplus(rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_c\_b[add\_d\_b[oplus(add\_c\_a[oplus(oplus(a(6),b(3)),c(5))],d(2))]],c(4))]]],b(1))]]]}
 		\item Number of labels: 4
@@ -614,7 +614,7 @@ In this section, we introduce some more test cases for the first graph, which wa
 \item Test case 4
 	\begin{itemize}
 		\item Edges: ((1,2),(2,3),(3,4),(4,5),(5,6))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 1, 3, 5, 6, 4, 2
 		\item Linear reduced term: oplus(1, oplus(3, oplus(5, oplus(6, oplus(4, 2)))))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_a[oplus(rel\_d\_b[rel\_c\_b[add\_d\_b[add\_d\_a[oplus(rel\_d\_c[add\_d\_c[add\_d\_b[oplus(oplus(oplus(a(2),b(4)),c(6)),d(5))]]],d(3))]]]],c(1))]]]}
 		\item Number of labels: 4
@@ -623,7 +623,7 @@ In this section, we introduce some more test cases for the first graph, which wa
 \item Test case 5
 	\begin{itemize}
 		\item Edges: ((4,3),(4,5),(6,5),(1,2),(2,3))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 1, 3, 6, 5, 4, 2
 		\item Linear reduced term: oplus(1, oplus(3, oplus(6, oplus(5, oplus(4, 2)))))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_a[oplus(rel\_d\_b[rel\_c\_b[add\_d\_b[add\_d\_a[oplus(rel\_d\_c[add\_d\_c[oplus(add\_c\_b[oplus(oplus(a(2),b(4)),c(5))],d(6))]],d(3))]]]],c(1))]]]}
 		\item Number of labels: 4
@@ -632,7 +632,7 @@ In this section, we introduce some more test cases for the first graph, which wa
 \item Test case 6
 	\begin{itemize}
 		\item Edges: ((5,4),(6,5),(2,1),(3,2),(4,3))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 6, 5, 1, 3, 4, 2
 		\item Linear reduced term: oplus(6, oplus(5, oplus(1, oplus(oplus(3,4),2))))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_c[oplus(rel\_b\_a[add\_c\_a[oplus(rel\_d\_b[rel\_c\_b[add\_d\_c[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(4),b(3))],c(2))],d(1))]]],c(5))]],b(6))]]]}
 		\item Number of labels: 4
@@ -641,7 +641,7 @@ In this section, we introduce some more test cases for the first graph, which wa
 \item Test case 7
 	\begin{itemize}
 		\item Edges: ((1,2),(6,5),(4,5),(3,4),(2,3))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 1, 3, 5, 2, 6, 4
 		\item Linear reduced term: oplus(oplus(oplus(1,oplus(oplus(3,5),2)),6),4)
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_a[oplus(rel\_d\_c[rel\_b\_a[add\_d\_a[oplus(rel\_d\_c[add\_d\_c[oplus(add\_c\_b[oplus(oplus(a(5),b(3)),c(2))],d(1))]],d(6))]]],b(4))]]]}
 		\item Number of labels: 4
@@ -662,7 +662,7 @@ The second graph is
 \item Test case 1
 	\begin{itemize}
 		\item Edges: ((1,2),(1,3),(2,3),(2,4),(3,4),(3,5),(4,6),(5,6))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 1, 2, 3, 4, 5, 6
 		\item Linear reduced term: oplus(1, oplus(2, oplus(3, oplus(4, oplus(5, 6)))))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_d\_b[rel\_c\_a[add\_b\_d[add\_b\_c[oplus(rel\_b\_a[add\_d\_c[add\_d\_b[oplus(add\_c\_a[oplus(add\_b\_a[oplus(a(6),b(5))],c(4))],d(3))]]],b(2))]]]],c(1))]]]}
 		\item Number of labels: 4
@@ -671,7 +671,7 @@ The second graph is
 \item Test case 2
 	\begin{itemize}
 		\item Edges: ((2,3),(2,4),(3,1),(1,2),(4,3),(6,4),(6,5),(3,5))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 2, 6, 3 5, 4, 1
 		\item Linear reduced term: oplus(2,oplus(6,oplus(oplus(oplus(3,5),4),1)))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_d\_a[rel\_c\_b[add\_d\_c[add\_d\_a[oplus(rel\_d\_b[add\_d\_b[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(5),b(3))],c(4))],d(1))]],d(6))]]]],c(2))]]]}
 		\item Number of labels: 4
@@ -680,7 +680,7 @@ The second graph is
 \item Test case 3
 	\begin{itemize}
 		\item Edges: ((3,4),(4,6),(6,5),(5,3),(4,2),(2,1),(2,3),(1,3))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 1, 3, 5, 6, 4, 2
 		\item Linear reduced term: oplus(oplus(oplus(oplus(1,oplus(3,5)),6),4),2)
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_e\_b[rel\_d\_a[rel\_c\_b[add\_e\_d[add\_e\_b[oplus(add\_d\_a[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(5),b(3))],c(1))],d(6))],e(4))]]]]],c(2))]]]}
 		\item Number of labels: 5
@@ -689,7 +689,7 @@ The second graph is
 \item Test case 4
 	\begin{itemize}
 		\item Edges: ((1,3),(3,5),(5,6),(6,4),(4,2),(2,1),(3,2),(3,4))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 4, 6, 3, 5, 1, 2
 		\item Linear reduced term: oplus(4,oplus(6,oplus(oplus(oplus(3,5),1),2)))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_c\_b[oplus(rel\_d\_b[rel\_c\_a[add\_d\_a[oplus(rel\_d\_b[add\_d\_c[add\_d\_b[oplus(add\_c\_b[oplus(add\_b\_a[oplus(a(5),b(3))],c(1))],d(2))]]],d(6))]]],c(4))]]]}
 		\item Number of labels: 4
@@ -698,7 +698,7 @@ The second graph is
 \item Test case 5
 	\begin{itemize}
 		\item Edges: ((2,4),(4,6),(1,3),(3,5),(5,6),(2,1),(3,2),(3,4))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 2, 4, 6, 5, 3, 1
 		\item Linear reduced term: oplus(2,oplus(4,oplus(oplus(oplus(6,5),3),1)))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_c[oplus(rel\_e\_c[rel\_d\_c[rel\_b\_a[add\_e\_c[add\_e\_b[oplus(add\_d\_c[oplus(add\_c\_a[oplus(add\_b\_a[oplus(a(5),b(6))],c(3))],d(1))],e(4))]]]]],b(2))]]]}
 		\item Number of labels: 5
@@ -707,7 +707,7 @@ The second graph is
 \item Test case 6
 	\begin{itemize}
 		\item Edges: ((3,1),(3,2),(3,4),(3,5),(1,2),(5,6),(4,2),(4,6))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 3, 5, 2, 1, 4, 6
 		\item Linear reduced term: oplus(3,oplus(5,oplus(2,oplus(oplus(1,4),6))))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_a[oplus(rel\_b\_a[add\_b\_c[oplus(rel\_b\_a[add\_b\_a[oplus(rel\_b\_a[add\_c\_a[oplus(oplus(a(4),b(1)),c(6))]],b(2))]],b(5))]],b(3))]]]}
 		\item Number of labels: 3
@@ -716,7 +716,7 @@ The second graph is
 \item Test case 7
 	\begin{itemize}
 		\item Edges: ((6,5),(5,3),(3,1),(1,2),(2,4),(4,6),(4,3),(3,2))
-		\item Sequence of vertices: 
+		\item Sequence of vertices: 6, 5, 4, 1, 2, 3
 		\item Linear reduced term: oplus(6,oplus(5,oplus(4,oplus(1,oplus(2,3)))))
 		\item Term: \seqsplit{rel\_c\_a[rel\_b\_a[add\_b\_c[oplus(rel\_d\_c[rel\_b\_a[add\_c\_a[oplus(rel\_c\_b[add\_d\_b[add\_d\_a[oplus(add\_c\_b[add\_c\_a[oplus(add\_b\_a[oplus(a(3),b(2))],c(1))]],d(4))]]],c(5))]]],b(6))]]]}
 		\item Number of labels: 4
