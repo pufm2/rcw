@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import puf.m2.rcw.graph.LabelSet;
 import puf.m2.rcw.graph.Vertex;
@@ -24,7 +25,7 @@ import puf.m2.rcw.utils.SetList;
 
 public class RelativeCliqueWidth {
 
-    public Term constructTerm(SimpleNode sn, VertexSet graphVs) {
+    public static Term constructTerm(SimpleNode sn, VertexSet graphVs) {
         Node n1 = sn.jjtGetChild(0);
         Node n2 = sn.jjtGetChild(1);
         if (n1 instanceof AstReducedTerm) {
@@ -34,7 +35,26 @@ public class RelativeCliqueWidth {
         }
     }
 
-    public Term constructTerm(SimpleNode sn, AstVertex av, VertexSet graphVs) {
+    public static Term constructTerm(String rTerm, VertexSet graphVs) {
+        rTerm = rTerm.replaceAll("\\s+", "");
+        StringTokenizer tokenizer = new StringTokenizer(rTerm, ",");
+        
+        Term term = null;
+        if (tokenizer.hasMoreTokens()) {
+            term = constructPort(tokenizer.nextToken(), graphVs, null);
+            
+            while (tokenizer.hasMoreTokens()) {
+                Port port = constructPort(tokenizer.nextToken(), graphVs, term);
+                
+                term = constructTerm(term, port, graphVs);
+                System.out.println(term);
+            }
+        }
+        
+        return term;
+    }
+    
+    public static Term constructTerm(SimpleNode sn, AstVertex av, VertexSet graphVs) {
 
         Term snTerm = null;
         if (sn.jjtGetNumChildren() == 2) {
@@ -56,31 +76,40 @@ public class RelativeCliqueWidth {
         }
 
         Port port = constructPort(av, graphVs, snTerm);
-
-        LabelSet usedlabel = LabelSet.union(snTerm.getUsedLabels(),
-                port.getUsedLabels());
-
-        snTerm.getVertexSet().cleanAdjacency();
-        VertexSet termVs = VertexSet.union(snTerm.getVertexSet(),
-                port.getVertexSet());
-        constructHs(termVs, graphVs);
-        VertexFamily partites = constructHsPartites(VertexFamily.union(
-                snTerm.getPartites(), port.getPartites()));
-        LabelSet gammaImage = new LabelSet();
-        List<Operator> operatorList = constructOperatorList(snTerm, port,
-                partites, graphVs, gammaImage);
-
-        Term term = new ProperTerm(snTerm, port, termVs, usedlabel,
-                gammaImage, partites, operatorList);
-        //System.out.println(term);
+        Term term = constructTerm(snTerm, port, graphVs);
+        System.out.println(term);
         return term;
 
     }
 
-    private Port constructPort(AstVertex av, VertexSet graphVs,
-            Term companyingTerm) {
-        String name = av.getName();
+    private static Term constructTerm(Term term, Port addedPort, VertexSet graphVs) {
+        LabelSet usedlabel = LabelSet.union(term.getUsedLabels(),
+                addedPort.getUsedLabels());
 
+        term.getVertexSet().cleanAdjacency();
+        VertexSet termVs = VertexSet.union(term.getVertexSet(),
+                addedPort.getVertexSet());
+        constructHs(termVs, graphVs);
+        VertexFamily partites = constructHsPartites(VertexFamily.union(
+                term.getPartites(), addedPort.getPartites()));
+        LabelSet gammaImage = new LabelSet();
+        List<Operator> operatorList = constructOperatorList(term, addedPort,
+                partites, graphVs, gammaImage);
+
+        term = new ProperTerm(term, addedPort, termVs, usedlabel,
+                gammaImage, partites, operatorList);
+        return term;
+    }
+    
+    private static Port constructPort(AstVertex av, VertexSet graphVs,
+            Term companyingTerm) {
+
+        return constructPort(av.getName(), graphVs, companyingTerm);
+    }
+    
+    private static Port constructPort(String name, VertexSet graphVs,
+            Term companyingTerm) {
+        
         VertexSet vs = new VertexSet();
         Vertex v = graphVs.get(name).clone();
 
@@ -106,7 +135,7 @@ public class RelativeCliqueWidth {
         return port;
     }
 
-    private void constructHs(VertexSet vs, VertexSet graphVs) {
+    private static void constructHs(VertexSet vs, VertexSet graphVs) {
         Map<String, VertexSet> neighbourMap = new HashMap<String, VertexSet>();
         for (Vertex v : vs.vertices()) {
 
@@ -133,7 +162,7 @@ public class RelativeCliqueWidth {
         }
     }
 
-    private VertexFamily constructHsPartites(VertexFamily partites) {
+    private static VertexFamily constructHsPartites(VertexFamily partites) {
 
         VertexFamily hsPartites = new VertexFamily();
         while (!partites.isEmpty()) {
@@ -162,7 +191,7 @@ public class RelativeCliqueWidth {
         return hsPartites;
     }
 
-    private List<Operator> constructOperatorList(Term term, Port port,
+    private static List<Operator> constructOperatorList(Term term, Port port,
             VertexFamily partites, VertexSet graphVs, LabelSet gammaImage) {
         List<Operator> operatorList = new SetList<Operator>();
 

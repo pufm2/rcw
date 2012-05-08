@@ -68,9 +68,8 @@ public class Main {
         } catch (ParseException e) {
             throw new RcwException(e);
         }
-        
-        RelativeCliqueWidth rcw = new RelativeCliqueWidth();
-        Term term = rcw.constructTerm((SimpleNode) node.jjtGetChild(0), graph.getVertexSet());
+
+        Term term = RelativeCliqueWidth.constructTerm((SimpleNode) node.jjtGetChild(0), graph.getVertexSet());
         return term;
     }
 }

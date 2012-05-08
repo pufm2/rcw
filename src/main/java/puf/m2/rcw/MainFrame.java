@@ -14,6 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import puf.m2.rcw.exception.RcwException;
+import puf.m2.rcw.graph.Graph;
 import puf.m2.rcw.term.Term;
 
 import java.awt.event.ActionListener;
@@ -27,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import javax.swing.JCheckBox;
 
 public class MainFrame extends JFrame {
 
@@ -37,6 +39,7 @@ public class MainFrame extends JFrame {
     private JTextField textReducedTerm;
     private JTextField textTerm;
     private JTextField textUsedLabels;
+    private JCheckBox chckbxSimple;
 
     private final JFileChooser fc = new JFileChooser();
     private final MainFrame thisFrame = this;
@@ -44,6 +47,7 @@ public class MainFrame extends JFrame {
      * Create the frame.
      */
     public MainFrame() {
+        setResizable(false);
         setTitle("Relative Clique Width");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 797, 336);
@@ -170,7 +174,13 @@ public class MainFrame extends JFrame {
         btnProcess.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Term term = Main.constructTerm(textReducedTerm.getText(), textEdges.getText());
+                    Term term;
+                    if (chckbxSimple.isSelected()) {
+                        Graph graph = new Graph(textEdges.getText());
+                        term = RelativeCliqueWidth.constructTerm(textReducedTerm.getText(), graph.getVertexSet());
+                    } else {
+                        term = Main.constructTerm(textReducedTerm.getText(), textEdges.getText());
+                    }
                     textTerm.setText(term.toString());
                     textUsedLabels.setText(Integer.toString(term.getUsedLabels().size()));
                 } catch (RcwException e1) {
@@ -200,9 +210,13 @@ public class MainFrame extends JFrame {
         textUsedLabels = new JTextField();
         sl_contentPane.putConstraint(SpringLayout.NORTH, textUsedLabels, -3, SpringLayout.NORTH, lblNewLabel_3);
         sl_contentPane.putConstraint(SpringLayout.WEST, textUsedLabels, 0, SpringLayout.WEST, textVerNumber);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, textUsedLabels, -12, SpringLayout.SOUTH, contentPane);
         sl_contentPane.putConstraint(SpringLayout.EAST, textUsedLabels, 0 , SpringLayout.EAST, textEdges);
         contentPane.add(textUsedLabels);
         textUsedLabels.setColumns(10);
+        
+        chckbxSimple = new JCheckBox("Simple");
+        sl_contentPane.putConstraint(SpringLayout.NORTH, chckbxSimple, -4, SpringLayout.NORTH, lblNewLabel_2);
+        sl_contentPane.putConstraint(SpringLayout.WEST, chckbxSimple, 6, SpringLayout.EAST, textReducedTerm);
+        contentPane.add(chckbxSimple);
     }
 }
